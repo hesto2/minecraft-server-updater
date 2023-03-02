@@ -3,7 +3,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import decompress from "decompress";
 import request from "superagent";
-const BASE_URL = "https://minecraft.azureedge.net/bin-win/"; // https://minecraft.azureedge.net/bin-win/bedrock-server-1.19.63.01.zip bin-win can be swapped out for bin-linux for linux servers
 const outputFilename = `server-${new Date().getTime()}.zip`;
 const BROWSER_PAGE = "https://www.minecraft.net/en-us/download/server/bedrock";
 const __filename = fileURLToPath(import.meta.url);
@@ -51,7 +50,7 @@ const downloadZip = async (url, targetPath) => {
 };
 
 const extractDownloadURL = (html) => {
-  const regex = /https:\/\/minecraft.azureedge\.net\/bin-win\/.*\.zip/gm;
+  const regex = /https:\/\/minecraft.azureedge\.net\/bin-win\/.*\.zip/gm; // bin-win can be replaced with bin-linux for linux servers
   let m;
   let downloadURL;
 

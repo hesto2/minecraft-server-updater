@@ -3,31 +3,42 @@ import path from "path";
 import { fileURLToPath } from "url";
 import decompress from "decompress";
 import request from "superagent";
+import reflect from "@alumna/reflect";
+
 const outputFilename = `server-${new Date().getTime()}.zip`;
 const BROWSER_PAGE = "https://www.minecraft.net/en-us/download/server/bedrock";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const locationToCopyTo = process.argv[2];
 
 const run = async () => {
+  if(!locationToCopyTo){
+    throw new Error("Argument is required for output path: node runthisfile /path/to/your/server");
+  }
   const html = await getHTML();
   const downloadUrl = extractDownloadURL(html);
   const zipLocation = `${__dirname}/${outputFilename}`;
   try {
     await downloadZip(downloadUrl, zipLocation);
     await extractZip(zipLocation);
-    await copyFiles();
+    await copyFiles(zipLocation.replace(".zip", ""), locationToCopyTo);
   } finally {
     await cleanup(zipLocation);
   }
 };
 
 const cleanup = async (zipLocation) => {
-  // delete zip file and folder if they exist
+  fs.unlinkSync(zipLocation);
+  fs.rmSync(zipLocation.replace(".zip", ""), { recursive: true, force: true });
 };
 
-const copyFiles = async (targetPath) => {
-  // Delete server.properties from zip
-  // Copy and overwrite all files in targetpath
+const copyFiles = async (sourcePath, targetPath) => {
+  const { res, err } = await reflect({
+    src: sourcePath,
+    dest: targetPath,
+    delete: false,
+    exclude: ["server.properties"],
+  });
 };
 
 const extractZip = async (zipLocation) => {

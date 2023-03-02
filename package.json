@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@alumna/reflect": "^1.0.5",
     "decompress": "^4.2.1",
     "superagent": "^8.0.9"
   }
